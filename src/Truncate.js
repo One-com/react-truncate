@@ -20,7 +20,9 @@ export default class Truncate extends Component {
         trimWhitespace: false
     };
 
-    state = {};
+    state = {
+        isVisible: true
+    };
 
     constructor(...args) {
         super(...args);
@@ -130,6 +132,17 @@ export default class Truncate extends Component {
             return;
         }
 
+        const targetVisible = target.offsetHeight;
+
+        // If target isn't visible on the page, then it'll start an infinite
+        // loop with requestAnimationFrame below
+        if (!targetVisible) {
+            this.setState({
+                isVisible: false
+            });
+            return;
+        }
+
         // Floor the result to deal with browser subpixel precision
         const targetWidth = Math.floor(
             target.parentNode.getBoundingClientRect().width
@@ -153,7 +166,8 @@ export default class Truncate extends Component {
         canvasContext.font = font;
 
         this.setState({
-            targetWidth
+            targetWidth,
+            isVisible: true
         }, callback);
     }
 
