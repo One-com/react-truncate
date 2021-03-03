@@ -143,6 +143,62 @@ ReadMore.propTypes = {
 export default ReadMore;
 ```
 
+### ReadMore component with React hooks and typescript
+```js
+import React, { useState } from "react";
+import Truncate from "react-truncate";
+import { Link } from "@material-ui/core";
+interface IReadMoreProps {
+  lines: number;
+  more?: string;
+  less?: string;
+}
+export const ReadMore: React.FC<IReadMoreProps> = ({
+  children,
+  lines,
+  more,
+  less,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const [truncated, setTruncated] = useState(false);
+  const handleTruncate = (isTruncated) => {
+    if (truncated !== isTruncated) {
+      setTruncated(isTruncated);
+    }
+  };
+  const toggleLines = (event) => {
+    event.preventDefault();
+    setExpanded((prev) => !prev);
+  };
+  return (
+    <div>
+      <Truncate
+        lines={!expanded && lines}
+        ellipsis={
+          <span>
+            ...{" "}
+            <Link href="#" onClick={toggleLines}>
+              {more || "Read more"}
+            </Link>
+          </span>
+        }
+        onTruncate={handleTruncate}
+      >
+        {children}
+      </Truncate>
+      {!truncated && expanded && (
+        <span>
+          {" "}
+          <Link href="#" onClick={toggleLines}>
+            {less || "Show less"}
+          </Link>
+        </span>
+      )}
+    </div>
+  );
+};
+```
+
 ## Developing
 Install system libraries needed for development dependencies
 - https://github.com/Automattic/node-canvas#installation
